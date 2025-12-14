@@ -24,29 +24,25 @@ db.connect((err) => {
   console.log('MySQL Connected!');
 });
 
-// Routes
-app.get('/api/users', (req, res) => {
-  db.query('SELECT * FROM users', (err, results) => {
+// Get all restaurants
+app.get('/api/restaurants', (req, res) => {
+  db.query('SELECT * FROM restaurants ORDER BY rating DESC', (err, results) => {
     if (err) throw err;
     res.json(results);
   });
 });
 
-app.post('/api/users', (req, res) => {
-  const { name, color } = req.body;
-  db.query('INSERT INTO users (name, color) VALUES (?, ?)', [name, color], (err, result) => {
-    if (err) throw err;
-    res.json({ id: result.insertId, name, color });
-  });
-});
-
-app.put('/api/users/:id', (req, res) => {
-  const { id } = req.params;
-  const { color } = req.body;
-  db.query('UPDATE users SET color = ? WHERE id = ?', [color, id], (err) => {
-    if (err) throw err;
-    res.json({ message: 'Color updated!' });
-  });
+// Search restaurants by cuisine
+app.get('/api/restaurants/search', (req, res) => {
+  const cuisine = req.query.cuisine;
+  db.query(
+    'SELECT * FROM restaurants WHERE LOWER(cuisine) LIKE ? ORDER BY rating DESC',
+    [`%${cuisine.toLowerCase()}%`],
+    (err, results) => {
+      if (err) throw err;
+      res.json(results);
+    }
+  );
 });
 
 app.listen(port, () => {

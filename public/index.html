@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Full Stack App</title>
+    <title>Restaurant Recommendation System</title>
     <style>
         * {
             margin: 0;
@@ -11,7 +11,7 @@
             box-sizing: border-box;
         }
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
@@ -22,97 +22,188 @@
         .container {
             background: white;
             padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            max-width: 600px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 700px;
             width: 100%;
         }
         h1 {
-            color: #333;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-        .user-card {
-            background: #f5f5f5;
-            padding: 20px;
-            margin: 15px 0;
-            border-radius: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .user-info h3 {
+            color: #667eea;
             margin-bottom: 10px;
+            text-align: center;
+            font-size: 2.2em;
         }
-        .color-box {
-            width: 100px;
-            height: 50px;
-            border-radius: 5px;
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        .search-box {
+            margin-bottom: 30px;
+        }
+        .search-box label {
+            display: block;
+            margin-bottom: 10px;
+            color: #333;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        .search-box input {
+            width: 100%;
+            padding: 15px;
             border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: border-color 0.3s;
         }
-        button {
+        .search-box input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .search-btn {
+            width: 100%;
+            padding: 15px;
             background: #667eea;
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
             cursor: pointer;
-            font-size: 14px;
-            margin-top: 10px;
+            margin-top: 15px;
+            transition: background 0.3s;
         }
-        button:hover {
+        .search-btn:hover {
             background: #5568d3;
         }
-        input[type="color"] {
-            width: 100px;
-            height: 40px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+        .results {
+            margin-top: 30px;
+        }
+        .results h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+        .restaurant-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .restaurant-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        .restaurant-info h3 {
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 1.3em;
+        }
+        .restaurant-info p {
+            color: #666;
+            font-size: 1em;
+        }
+        .rating {
+            background: #667eea;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+        .no-results {
+            text-align: center;
+            color: #999;
+            padding: 40px;
+            font-size: 1.1em;
+        }
+        .emoji {
+            font-size: 3em;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🎨 User Color Manager - Updated!</h1>
-        <div id="users"></div>
+        <h1>🍽️ Restaurant Finder</h1>
+        <p class="subtitle">Find the best restaurant for your favorite meal!</p>
+        
+        <div class="search-box">
+            <label for="cuisine">What's your favorite meal?</label>
+            <input type="text" id="cuisine" placeholder="e.g., pizza, burger, sushi, shawarma..." />
+            <button class="search-btn" onclick="searchRestaurants()">🔍 Find Restaurants</button>
+        </div>
+
+        <div class="results" id="results"></div>
     </div>
 
     <script>
         const API_URL = 'http://localhost:3000/api';
 
-        async function loadUsers() {
-            const response = await fetch(`${API_URL}/users`);
-            const users = await response.json();
+        async function searchRestaurants() {
+            const cuisine = document.getElementById('cuisine').value.trim();
+            const resultsDiv = document.getElementById('results');
             
-            const usersDiv = document.getElementById('users');
-            usersDiv.innerHTML = '';
-            
-            users.forEach(user => {
-                const userCard = document.createElement('div');
-                userCard.className = 'user-card';
-                userCard.innerHTML = `
-                    <div class="user-info">
-                        <h3>${user.name}</h3>
-                        <input type="color" value="${user.color}" 
-                               onchange="updateColor(${user.id}, this.value)">
+            if (!cuisine) {
+                resultsDiv.innerHTML = `
+                    <div class="no-results">
+                        <div class="emoji">🤔</div>
+                        Please enter your favorite meal!
                     </div>
-                    <div class="color-box" style="background-color: ${user.color}"></div>
                 `;
-                usersDiv.appendChild(userCard);
-            });
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/restaurants/search?cuisine=${cuisine}`);
+                const restaurants = await response.json();
+                
+                if (restaurants.length === 0) {
+                    resultsDiv.innerHTML = `
+                        <div class="no-results">
+                            <div class="emoji">😕</div>
+                            No restaurants found for "${cuisine}"<br>
+                            Try: pizza, burger, sushi, pasta, chicken, shawarma, or falafel
+                        </div>
+                    `;
+                    return;
+                }
+
+                let html = '<h2>🌟 Recommended Restaurants:</h2>';
+                restaurants.forEach(restaurant => {
+                    html += `
+                        <div class="restaurant-card">
+                            <div class="restaurant-info">
+                                <h3>${restaurant.name}</h3>
+                                <p>🍴 Cuisine: ${restaurant.cuisine}</p>
+                            </div>
+                            <div class="rating">⭐ ${restaurant.rating}</div>
+                        </div>
+                    `;
+                });
+                
+                resultsDiv.innerHTML = html;
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <div class="no-results">
+                        <div class="emoji">❌</div>
+                        Error loading restaurants!
+                    </div>
+                `;
+            }
         }
 
-        async function updateColor(id, color) {
-            await fetch(`${API_URL}/users/${id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ color })
-            });
-            loadUsers();
-        }
-
-        loadUsers();
+        // Allow Enter key to search
+        document.getElementById('cuisine').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchRestaurants();
+            }
+        });
     </script>
 </body>
 </html>
