@@ -13,7 +13,7 @@ app.use(express.static('public'));
 
 // Database connection
 const db = mysql.createConnection({
-  host: '172.17.0.1',
+host: 'mysql-container',
   user: 'appuser',
   password: 'password123',
   database: 'fullstack_db'
