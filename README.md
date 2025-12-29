@@ -13,3 +13,8 @@ Full-stack application with CI/CD pipeline.
 ```
 docker-compose up -d
 ```
+---
+
+## 👥 Team Members
+- **Ibrahim Juma** - Lead Developer & DevOps Engineer
+- **Doaa Ayyad** - Backend Developer & Database Administrator
