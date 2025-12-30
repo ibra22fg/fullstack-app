@@ -12,7 +12,7 @@
         }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -130,7 +130,7 @@ background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
 </head>
 <body>
     <div class="container">
-<h1>🍽️ Palestinian  Restaurant Finder 🍽️ </h1>        <p class="subtitle">Find the best restaurant for your favorite meal!</p>
+<h1>🍽️ alestinian  Restaurant Finder 🍽️ </h1>        <p class="subtitle">Find the best restaurant for your favorite meal!</p>
         
         <div class="search-box">
             <label for="cuisine">What's your favorite meal?</label>
